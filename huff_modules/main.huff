@@ -1,0 +1,88 @@
+#include './constants.huff'
+
+// stack: [ bottom top ]
+
+#define macro COPY_RETURNDATA = takes (0) returns (0) {
+    // returndatacopy(dest_offset, offset, len)
+    // returndatacopy(return_data_ptr, 0x00, returndatasize)
+
+    // [ 0x00 success ]
+    returndatasize          // [ 0x00 success returndatasize ]
+    dup1                    // [ 0x00 success returndatasize returndatasize ]
+    dup4                    // [ 0x00 success returndatasize returndatsize 0x00 ]
+    // this takes advantage of return_data_ptr == 0x00
+    dup5                    // [ 0x00 success returndatasize returndatsize 0x00 0x00 ]
+    returndatacopy          // [ 0x00 success returndatasize ]
+}
+
+
+#define macro DO_DELEGATECALL = takes (2) returns (2) {
+    // delegatecall(gas, addr, argsOffset, argsLength, retOffset, retLength)
+    // delegatecall(gas, TARGET(), 0x00, calldatasize, 0x00, 0x00)
+
+    // [ 0x00 calldatasize ]
+    dup2                    // [ 0x00 calldatasize 0x00 ]
+    dup3                    // [ 0x00 calldatasize 0x00 0x00 ]
+    swap2                   // [ 0x00 0x00 0x00 calldatasize ]
+    dup4                    // [ 0x00 0x00 0x00 calldatasize 0x00 ]
+    TARGET()                // [ 0x00 0x00 0x00 calldatasize 0x00 TARGET() ]
+    gas                     // [ 0x00 0x00 0x00 calldatasize 0x00 TARGET() gas ]
+    delegatecall            // [ 0x00 success ]
+}
+
+
+// // calldatacopy(destOffset, offset, length) memory[destOffset:destOffset+length] = msg.data[offset:offet+lenght]
+#define macro COPY_CALLDATA = takes (1) returns (2) {
+    // calldatacopy(destOffset, offset, length)
+    // calldatacopy(0x00, 0x00, calldatasize)
+    // writes calldata to memory from 0x00 to (0x00 + calldatasize).
+    // takes advantage of the fact that the free_mem_ptr is at 0x00
+
+    // [ 0x00 ]
+    calldatasize            // [ 0x00 calldatasize ]
+    dup1                    // [ 0x00 calldatasize calldatasize ]
+    dup3                    // [ 0x00 calldatasize calldatasize 0x00 ]
+    dup4                    // [ 0x00 calldatasize calldatasize 0x00 0x00 ]
+    calldatacopy            // [ 0x00 calldatasize ]
+}
+
+
+template <throw_label>
+#define macro CHECK_RETURN = takes (3) returns (2) {
+    // check that call succeeded, else bubble up revert
+
+    // [ 0x00 success returndatasize ]
+    swap2                   // [ returndatasize success 0x00 ]
+    swap1                   // [ returndatasize 0x00 success ]
+    iszero                  // [ returndatasize 0x00 (success==0) ]
+    <throw_label>           // [ returndatasize 0x00 (success==0) <throw_label> ]
+    jumpi                   // [ returndatasize 0x00 ]
+}
+
+
+// todo
+// - if returndatasize == 0, should we still copy it?
+    // - does copying with len == 0 cause any problems?
+    // - which is more efficient for deployment? for calls?
+#define macro MAIN__PROXY = takes (2) returns (1) {
+    // [ ]
+    0x00                    // [ 0x00 ]
+    COPY_CALLDATA()         // [ 0x00 calldatasize ]
+    DO_DELEGATECALL()       // [ 0x00 success ]
+    COPY_RETURNDATA()       // [ 0x00 success returndatasize ]
+
+    // switch success
+    // case 0 { revert(return_data_ptr, return_data_len) }
+    // case 1 { return(return_data_ptr, return_data_len) }
+    CHECK_RETURN<throw>()   // [ returndatasize 0x00 ]
+
+    return                  // [ ]
+
+    // [ returndatasize 0x00 ]
+    throw:
+        revert
+}
+
+#define macro MAIN__CONSTRUCTOR = takes (0) returns (0) {}
+
+#define macro TEST_CONSTRUCTOR = takes (0) returns (0) {}

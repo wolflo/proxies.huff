@@ -1,0 +1,24 @@
+{
+  "name": "huff-proxy",
+  "version": "0.0.1",
+  "description": "Ethereum delegatecall proxy implemented in Huff",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:nsward/huff-proxy.git"
+  },
+  "scripts": {
+    "compile": "node ./compile.js",
+    "test": "mocha ./huff_tests/ --trace-warnings --exit --colors --recursive --reporter spec"
+  },
+  "author": "nsward",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.1.4"
+  },
+  "dependencies": {
+    "bn-chai": "^1.0.1",
+    "bn.js": "^4.11.8"
+  }
+}

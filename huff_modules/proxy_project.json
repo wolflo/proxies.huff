@@ -1,0 +1,7 @@
+{
+    "name": "proxy",
+    "file": "main.huff",
+    "constructor": "TEST_CONSTRUCTOR",
+    "entryMacro": "MAIN__PROXY",
+    "abi": []
+}
