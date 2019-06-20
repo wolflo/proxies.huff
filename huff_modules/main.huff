@@ -83,6 +83,15 @@ template <throw_label>
         revert
 }
 
-#define macro MAIN__CONSTRUCTOR = takes (0) returns (0) {}
+#define macro MAIN__CONSTRUCTOR = takes (0) returns (0) {
+    // codecopy(destOffset, offset, len)
+    // codecopy(0x00, 0x00, __codesize)
+    __codesize(MAIN__PROXY) // [ __codesize ]
+    0x00                    // [ __codesize 0x00 ]
+    dup2                    // [ __codesize 0x00 __codesize ]
+    dup2                    // [ __codesize 0x00 __codesize 0x00 ]
+    dup1                    // [ __codesize 0x00 __codesize 0x00 0x00 ]
+    codecopy                // [ __codesize 0x00 ]
 
-#define macro TEST_CONSTRUCTOR = takes (0) returns (0) {}
+    return
+}
