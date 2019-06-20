@@ -1,1 +1,3 @@
-#define macro TARGET = takes(0) returns(2) { 0x2e1a774b13a6a5b31412068b8ade895b1eb1d744 }
+// #define macro TARGET = takes(0) returns(2) { 0x2e1a774b13a6a5b31412068b8ade895b1eb1d744 }
+// target for dapptools test logic contract
+#define macro TARGET = takes(0) returns(2) { 0xe58d97b6622134c0436d60daee7fbb8b965d9713 }
