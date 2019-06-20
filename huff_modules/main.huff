@@ -2,7 +2,7 @@
 
 // stack: [ bottom top ]
 
-#define macro COPY_RETURNDATA = takes (0) returns (0) {
+#define macro COPY_RETURNDATA = takes(0) returns(0) {
     // returndatacopy(dest_offset, offset, len)
     // returndatacopy(return_data_ptr, 0x00, returndatasize)
 
@@ -16,7 +16,7 @@
 }
 
 
-#define macro DO_DELEGATECALL = takes (2) returns (2) {
+#define macro DO_DELEGATECALL = takes(2) returns(2) {
     // delegatecall(gas, addr, argsOffset, argsLength, retOffset, retLength)
     // delegatecall(gas, TARGET(), 0x00, calldatasize, 0x00, 0x00)
 
@@ -32,7 +32,7 @@
 
 
 // // calldatacopy(destOffset, offset, length) memory[destOffset:destOffset+length] = msg.data[offset:offet+lenght]
-#define macro COPY_CALLDATA = takes (1) returns (2) {
+#define macro COPY_CALLDATA = takes(1) returns(2) {
     // calldatacopy(destOffset, offset, length)
     // calldatacopy(0x00, 0x00, calldatasize)
     // writes calldata to memory from 0x00 to (0x00 + calldatasize).
@@ -48,7 +48,7 @@
 
 
 template <throw_label>
-#define macro CHECK_RETURN = takes (3) returns (2) {
+#define macro CHECK_RETURN = takes(3) returns(2) {
     // check that call succeeded, else bubble up revert
 
     // [ 0x00 success returndatasize ]
@@ -64,7 +64,7 @@ template <throw_label>
 // - if returndatasize == 0, should we still copy it?
     // - does copying with len == 0 cause any problems?
     // - which is more efficient for deployment? for calls?
-#define macro MAIN__PROXY = takes (2) returns (1) {
+#define macro MAIN__PROXY = takes(2) returns(1) {
     // [ ]
     0x00                    // [ 0x00 ]
     COPY_CALLDATA()         // [ 0x00 calldatasize ]
@@ -83,15 +83,36 @@ template <throw_label>
         revert
 }
 
-#define macro MAIN__CONSTRUCTOR = takes (0) returns (0) {
+
+// used to determine offset in constructor (size of constructor_shallow
+// should equal size of constructor, which is then used as the offset
+// for codecopy in the constructor)
+#define macro MAIN__CONSTRUCTOR_SHALLOW = takes(0) returns(0) {
+
+}
+
+
+// todo: codecopy offset should be start of runtime code, not 0x00
+// todo: huff prepends it's own constructor, then our constructor?
+#define macro MAIN__CONSTRUCTOR = takes(0) returns(0) {
     // codecopy(destOffset, offset, len)
     // codecopy(0x00, 0x00, __codesize)
+
+    //[ ]
     __codesize(MAIN__PROXY) // [ __codesize ]
     0x00                    // [ __codesize 0x00 ]
     dup2                    // [ __codesize 0x00 __codesize ]
     dup2                    // [ __codesize 0x00 __codesize 0x00 ]
     dup1                    // [ __codesize 0x00 __codesize 0x00 0x00 ]
     codecopy                // [ __codesize 0x00 ]
-
-    return
+    return                  // [ ]
 }
+
+// huff's prepended constructor:
+// 610031  PUSH2 0x0031 (49, runtime codesize)      [ 0031 ]
+// 80      DUP1                                     [ 0031 0031 ]
+// 61000d  PUSH2 0x000d (13, runtime code offset)   [ 0031 0031 13 ]
+// 6000    PUSH 0x00                                [ 0031 0031 13 0x00 ]
+// 39      CODECOPY                                 [ 0031 ]
+// 6000    PUSH 0x00                                [ 0031 0x00 ]
+// f3      RETURN
