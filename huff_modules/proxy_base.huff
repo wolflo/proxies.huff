@@ -1,6 +1,9 @@
-#include './constants.huff'
-
 // stack: [ bottom top ]
+
+// to be overriden by inheriting contract
+#define macro TARGET = takes(0) returns(1) {}
+#define macro RUNTIME = takes(0) returns(0) {}
+#define macro CONSTRUCTOR_SHALLOW = takes(0) returns(0) {}
 
 #define macro COPY_RETURNDATA = takes(2) returns(3) {
     // returndatacopy(dest_offset, offset, len)
@@ -31,7 +34,6 @@
 }
 
 
-// // calldatacopy(destOffset, offset, length) memory[destOffset:destOffset+length] = msg.data[offset:offet+lenght]
 #define macro COPY_CALLDATA = takes(1) returns(2) {
     // calldatacopy(destOffset, offset, length)
     // calldatacopy(0x00, 0x00, calldatasize)
@@ -49,7 +51,9 @@
 
 template <throw_label>
 #define macro CHECK_RETURN = takes(3) returns(2) {
-    // check that call succeeded, else bubble up revert
+    // switch success
+    // case 0 { revert(return_data_ptr, return_data_len) }
+    // case 1 { return(return_data_ptr, return_data_len) }
 
     // [ 0x00 success returndatasize ]
     swap2                   // [ returndatasize success 0x00 ]
@@ -60,22 +64,13 @@ template <throw_label>
 }
 
 
-// todo
-// - if returndatasize == 0, should we still copy it?
-    // - does copying with len == 0 cause any problems?
-    // - which is more efficient for deployment? for calls?
-#define macro MAIN__PROXY = takes(0) returns(0) {
+#define macro RUNTIME = takes(0) returns(0) {
     // [ ]
     0x00                    // [ 0x00 ]
     COPY_CALLDATA()         // [ 0x00 calldatasize ]
     DO_DELEGATECALL()       // [ 0x00 success ]
     COPY_RETURNDATA()       // [ 0x00 success returndatasize ]
-
-    // switch success
-    // case 0 { revert(return_data_ptr, return_data_len) }
-    // case 1 { return(return_data_ptr, return_data_len) }
     CHECK_RETURN<throw>()   // [ returndatasize 0x00 ]
-
     return                  // [ ]
 
     // [ returndatasize 0x00 ]
@@ -84,42 +79,26 @@ template <throw_label>
 }
 
 
-// used to determine offset in constructor (size of constructor_shallow
-// should equal size of constructor, which is then used as the offset
-// for codecopy in the constructor)
-#define macro MAIN__CONSTRUCTOR_SHALLOW = takes(0) returns(0) {
-    //[ ]
-    __codesize(MAIN__PROXY)
-    0x00
-    dup2
-    0x01    // 0x01 is a placeholder for __codesize(MAIN__CONSTRUCTOR_SHALLOW)
-    dup3
-    codecopy
-    return
-}
-
-
-#define macro MAIN__CONSTRUCTOR = takes(0) returns(0) {
+#define macro COPY_RUNTIME = takes(0) returns(2) {
     // codecopy(destOffset, offset, len)
     // codecopy(0x00, runtime_offset, runtime_size)
 
-    //[ ]
-    __codesize(MAIN__PROXY)                 // [ rt_size ]
-    0x00                                    // [ rt_size 0x00 ]
-    dup2                                    // [ rt_size 0x00 rt_size ]
-    __codesize(MAIN__CONSTRUCTOR_SHALLOW)   // [ rt_size 0x00 rt_size rt_offset ]
-    dup3                                    // [ rt_size 0x00 rt_size rt_offset 0x00 ]
-    codecopy                                // [ runtime_size 0x00 ]
-    return                                  // [ ]
+    // [ ]
+    __codesize(RUNTIME)             // [ rt_size ]
+    0x00                            // [ rt_size 0x00 ]
+    dup2                            // [ rt_size 0x00 rt_size ]
+    __codesize(CONSTRUCTOR_SHALLOW) // [ rt_size 0x00 rt_size rt_offset ]
+    dup3                            // [ rt_size 0x00 rt_size rt_offset 0x00 ]
+    codecopy                        // [ rt_size 0x00 ]
 }
 
-// huff's prepended constructor:
-    // - just use /proxy.json -> it only prepends our constructor
-// only prepended in 
-// 610031  PUSH2 0x0031 (49, runtime codesize)      [ 0031 ]
-// 80      DUP1                                     [ 0031 0031 ]
-// 61000d  PUSH2 0x000d (13, runtime code offset)   [ 0031 0031 13 ]
-// 6000    PUSH 0x00                                [ 0031 0031 13 0x00 ]
-// 39      CODECOPY                                 [ 0031 ]
-// 6000    PUSH 0x00                                [ 0031 0x00 ]
-// f3      RETURN
+
+// COPY_RUNTIME w/ placeholder instead of __codesize(CONSTRUCTOR_SHALLOW)
+#define macro COPY_RUNTIME_SHALLOW = takes(0) returns(0) {
+    __codesize(RUNTIME)
+    0x00
+    dup2
+    0x01            // placeholder for __codesize(MAIN__CONSTRUCTOR_SHALLOW)
+    dup3
+    codecopy
+}
