@@ -21,7 +21,7 @@ const contracts = [{
 
 fs.writeFileSync(
   path.posix.resolve(__dirname, './proxies.json'),
-  JSON.stringify(contracts)
+  JSON.stringify(contracts, null, 2)
 );
 
 console.log('written bytecode to proxies.json');
