@@ -8,16 +8,23 @@ const modulesPath = path.posix.resolve(__dirname, './huff_modules');
 
 const proxy_constant = parseContract('proxy_constant.huff', modulesPath);
 const proxy_storage = parseContract('proxy_storage.huff', modulesPath);
+const proxy_2d = parseContract('proxy_2d.huff', modulesPath);
 
-const contracts = [{
-  name: 'proxy_constant',
-  bytecode: `0x${proxy_constant.bytecode}`,
-  runtimeBytecode: `0x${proxy_constant.runtime}`,
-}, {
-  name: 'proxy_storage',
-  bytecode: `0x${proxy_storage.bytecode}`,
-  runtimeBytecode: `0x${proxy_storage.runtime}`,
-}];
+const contracts = [
+  {
+    name: 'proxy_constant',
+    bytecode: `0x${proxy_constant.bytecode}`,
+    runtimeBytecode: `0x${proxy_constant.runtime}`,
+  }, {
+    name: 'proxy_storage',
+    bytecode: `0x${proxy_storage.bytecode}`,
+    runtimeBytecode: `0x${proxy_storage.runtime}`,
+  }, {
+    name: 'proxy_2d',
+    bytecode: `0x${proxy_2d.bytecode}`,
+    runtimeBytecode: `0x${proxy_2d.runtime}`,
+  }
+];
 
 fs.writeFileSync(
   path.posix.resolve(__dirname, './proxies.json'),

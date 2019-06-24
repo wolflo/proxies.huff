@@ -5,7 +5,6 @@
 // target for dapptools test logic contract
 #define macro TARGET = takes(0) returns(1) { 0xE58d97b6622134C0436d60daeE7FBB8b965D9713 }
 
-
 // used to determine offset in constructor (size of constructor_shallow
 // should equal size of constructor, which is then used as the offset
 // for codecopy in the constructor)
@@ -16,24 +15,7 @@
 
 
 #define macro CONSTRUCTOR = takes(0) returns(0) {
-    // codecopy(destOffset, offset, len)
-    // codecopy(0x00, runtime_offset, runtime_size)
-
     //[ ]
     COPY_RUNTIME()                  // [ runtime_size 0x00 ]
     return                          // [ ]
 }
-
-// #define macro RUNTIME = takes(0) returns(0) {
-//     // [ ]
-//     0x00                    // [ 0x00 ]
-//     COPY_CALLDATA()         // [ 0x00 calldatasize ]
-//     DO_DELEGATECALL()       // [ 0x00 success ]
-//     COPY_RETURNDATA()       // [ 0x00 success returndatasize ]
-//     CHECK_RETURN<throw>()   // [ returndatasize 0x00 ]
-//     return                  // [ ]
-
-//     // [ returndatasize 0x00 ]
-//     throw:
-//         revert
-// }

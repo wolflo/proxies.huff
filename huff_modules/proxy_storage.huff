@@ -2,6 +2,9 @@
 
 // stack: [ bottom top ]
 
+// TODO:
+// - take target from constructor arg rather than caller
+
 #define macro TARGET_SLOT = takes(0) returns(1) { 0x0 }
 
 #define macro TARGET = takes(0) returns(1) {
@@ -40,18 +43,3 @@
     COPY_RUNTIME()                  // [ runtime_size 0x00 ]
     return                          // [ ]
 }
-
-// #define macro RUNTIME = takes(0) returns(1) {
-//     // [ ]
-//     0x00                            // [ 0x00 ]
-//     COPY_CALLDATA()                 // [ 0x00 calldatasize ]
-//     DO_DELEGATECALL()               // [ 0x00 success ]
-//     COPY_RETURNDATA()               // [ 0x00 success returndatasize ]
-//     CHECK_RETURN<throw>()           // [ returndatasize 0x00 ]
-//     return                          // [ ]
-
-//     // [ returndatasize 0x00 ]
-//     throw:
-//         revert
-// }
-

@@ -2,7 +2,6 @@
 
 // to be overriden by inheriting contract
 #define macro TARGET = takes(0) returns(1) {}
-#define macro RUNTIME = takes(0) returns(0) {}
 #define macro CONSTRUCTOR_SHALLOW = takes(0) returns(0) {}
 
 #define macro COPY_RETURNDATA = takes(2) returns(3) {
