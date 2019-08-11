@@ -2,10 +2,10 @@
 
 // stack: [ bottom top ]
 
-// TODO:
-// - take target from constructor arg rather than caller
+// TODO: Add an OWNER_SLOT and store the deployer address?
 
-#define macro TARGET_SLOT = takes(0) returns(1) { 0x0 }
+// constant
+#define macro TARGET_SLOT = takes(0) returns(1) { 0x00 }
 
 #define macro TARGET = takes(0) returns(1) {
     // sload(TARGET_SLOT)
@@ -15,31 +15,98 @@
     sload                           // [ ]
 }
 
+template <constructor_args_offset>
+#define macro COPY_CONSTRUCTOR_ARGS = takes(1) returns(2) {
+    // codecopy(destOffset, offset, length)
 
-#define macro STORE_TARGET = takes(0) returns(0) {
+    // [ dest_offset ]
+    <constructor_args_offset>       // [ dest_off c_args_off ]
+    dup1                            // [ dest_off c_args_off c_args_off ]
+    codesize                        // [ dest_off c_args_off c_args_off codesize ]
+    sub                             // [ dest_off c_args_off c_args_len ]
+    dup1                            // [ dest_off c_args_off c_args_len c_args_len ]
+    swap2                           // [ dest_off c_args_len c_args_len c_args_off ]
+    dup4                            // [ dest_off c_args_len c_args_len c_args_off dest_off ]
+    codecopy                        // [ c_args_ptr c_args_len]
+}
+
+#define macro STORE_TARGET = takes(1) returns(0) {
     // sstore(key, value)
-    // sstore(TARGET_SLOT, caller)
 
-    // [ ]
-    caller                          // [ caller ]
-    TARGET_SLOT()                   // [ caller TARGET_SLOT() ]
+    // [ target ]
+    TARGET_SLOT()                   // [ target TARGET_SLOT() ]
     sstore                          // [ ]
 }
 
+// bitmask an address
+#define macro MASK_ADDRESS = takes(1) returns(1) {
+    // [ addr ]
+    0x01                            // [ addr 0x01 ]
+    dup1                            // [ addr 0x01 0x01 ]
+    0xa0                            // [ addr 0x01 0x01 0xa0 ]
+    shl
+    sub
+    and                             // [ address(addr) ]
+}
+
+template <throw_label>
+#define macro ASSERT_GTE_32 = takes(1) returns(0) {
+    // [ value ]
+    0x20                            // [ value 0x20 ]
+    swap1                           // [ 0x20 value ]
+    lt                              // [ (value < 0x20) ]
+    <throw_label>                   // [ (value < 0x20) throw_label ]
+    jumpi                           // [ ]
+}
+
+#define macro COPY_RUNTIME_SHALLOW = takes(0) returns(0) {
+    0x00
+    0x00
+    dup2
+    0x00
+    dup3
+    codecopy
+}
 
 // used to determine offset in constructor (size of constructor_shallow
 // should equal size of constructor, which is then used as the offset
 // for codecopy in the constructor)
 #define macro CONSTRUCTOR_SHALLOW = takes(0) returns(0) {
-    STORE_TARGET()
-    COPY_RUNTIME_SHALLOW()
-    return
+    0x00
+    COPY_CONSTRUCTOR_ARGS<0x00>()
+    ASSERT_GTE_32<throw_label>()  // [ c_args_ptr ]
+    mload                               // [ target ]
+    MASK_ADDRESS()                      // address(target) ]
+    STORE_TARGET()                      // [ ]
+    COPY_RUNTIME_SHALLOW()              // [ runtime_size 0x00 ]
+    return                              // [ ]
+
+    throw_label:
+        revert
 }
 
+#define macro CONSTRUCTOR_SHALLOW_SIZE = takes(0) returns(1) {
+    __codesize(CONSTRUCTOR_SHALLOW)
+}
+
+#define macro RUNTIME_SIZE = takes(0) returns(1) {
+    __codesize(RUNTIME)
+}
 
 #define macro CONSTRUCTOR = takes(0) returns(0) {
     // [ ]
-    STORE_TARGET()                  // [ ]
-    COPY_RUNTIME()                  // [ runtime_size 0x00 ]
-    return                          // [ ]
+    0x00                                // [ c_args_ptr ]
+    COPY_CONSTRUCTOR_ARGS<CONSTRUCTOR_SHALLOW_SIZE+RUNTIME_SIZE>()
+    // [ c_args_ptr c_args_len ]
+
+    // check that constructor args were at least 32 bytes
+    ASSERT_GTE_32<throw_label>()  // [ c_args_ptr ]
+    mload                               // [ target ]
+    MASK_ADDRESS()                      // address(target) ]
+    STORE_TARGET()                      // [ ]
+    COPY_RUNTIME()                      // [ runtime_size 0x00 ]
+    return                              // [ ]
+
+    throw_label:
+        revert
 }

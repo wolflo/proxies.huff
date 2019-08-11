@@ -65,15 +65,15 @@ template <throw_label>
 
 #define macro RUNTIME = takes(0) returns(0) {
     // [ ]
-    0x00                    // [ 0x00 ]
-    COPY_CALLDATA()         // [ 0x00 calldatasize ]
-    DO_DELEGATECALL()       // [ 0x00 success ]
-    COPY_RETURNDATA()       // [ 0x00 success returndatasize ]
-    CHECK_RETURN<throw>()   // [ returndatasize 0x00 ]
-    return                  // [ ]
+    0x00                        // [ 0x00 ]
+    COPY_CALLDATA()             // [ 0x00 calldatasize ]
+    DO_DELEGATECALL()           // [ 0x00 success ]
+    COPY_RETURNDATA()           // [ 0x00 success returndatasize ]
+    CHECK_RETURN<throw_label>() // [ returndatasize 0x00 ]
+    return                      // [ ]
 
     // [ returndatasize 0x00 ]
-    throw:
+    throw_label:
         revert
 }
 
@@ -97,7 +97,7 @@ template <throw_label>
     __codesize(RUNTIME)
     0x00
     dup2
-    0x01            // placeholder for __codesize(MAIN__CONSTRUCTOR_SHALLOW)
+    0x01            // placeholder for __codesize(CONSTRUCTOR_SHALLOW)
     dup3
     codecopy
 }

@@ -5,20 +5,6 @@
 // TODO:
 // - a proxy that delegatecalls it's constructor. Takes an arbitrary number of constructor args. The first one is the constructor target, the next one is the target (for future delegate calls) and everything else gets copied into memory for the delegatecall to the constructor target. The constructor target implements a fallback function that sets the storage according to any arbitrary logic using the data forwarded from the constructor. Then, all future delegate calls go to the runtime target
 
-// target for dapptools test logic contract
-#define macro TARGET = takes(0) returns(1) { 0xE58d97b6622134C0436d60daeE7FBB8b965D9713 }
+#define macro CONSTRUCTOR_SHALLOW = takes(0) returns(0) { }
 
-// used to determine offset in constructor (size of constructor_shallow
-// should equal size of constructor, which is then used as the offset
-// for codecopy in the constructor)
-#define macro CONSTRUCTOR_SHALLOW = takes(0) returns(0) {
-    COPY_RUNTIME_SHALLOW()
-    return
-}
-
-
-#define macro CONSTRUCTOR = takes(0) returns(0) {
-    // [ ]
-    COPY_RUNTIME()
-    return
-}
+#define macro CONSTRUCTOR = takes(0) returns(0) { }

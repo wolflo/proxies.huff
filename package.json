@@ -1,7 +1,14 @@
 {
   "name": "huff-proxy",
+  "author": "nsward",
   "version": "0.0.1",
   "description": "Ethereum delegatecall proxy implemented in Huff",
+  "keywords": [
+    "huff",
+    "ethereum",
+    "evm",
+    "smart-contracts"
+  ],
   "main": "index.js",
   "repository": {
     "type": "git",
@@ -11,7 +18,6 @@
     "compile": "node ./compile.js",
     "test": "mocha ./huff_tests/ --trace-warnings --exit --colors --recursive --reporter spec"
   },
-  "author": "nsward",
   "license": "MIT",
   "devDependencies": {
     "chai": "^4.2.0",
