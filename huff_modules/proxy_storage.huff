@@ -3,6 +3,7 @@
 // stack: [ bottom top ]
 
 // TODO: Add an OWNER_SLOT and store the deployer address?
+// Take a second contructor arg, or set it to caller?
 
 // constant
 #define macro TARGET_SLOT = takes(0) returns(1) { 0x00 }

@@ -5,6 +5,66 @@
 // TODO:
 // - a proxy that delegatecalls it's constructor. Takes an arbitrary number of constructor args. The first one is the constructor target, the next one is the target (for future delegate calls) and everything else gets copied into memory for the delegatecall to the constructor target. The constructor target implements a fallback function that sets the storage according to any arbitrary logic using the data forwarded from the constructor. Then, all future delegate calls go to the runtime target
 
+template <constructor_args_offset>
+#define macro COPY_CONSTRUCTOR_ARGS = takes(1) returns(2) {
+    // codecopy(destOffset, offset, length)
+
+    // [ dest_offset ]
+    <constructor_args_offset>       // [ dest_off c_args_off ]
+    dup1                            // [ dest_off c_args_off c_args_off ]
+    codesize                        // [ dest_off c_args_off c_args_off codesize ]
+    sub                             // [ dest_off c_args_off c_args_len ]
+    dup1                            // [ dest_off c_args_off c_args_len c_args_len ]
+    swap2                           // [ dest_off c_args_len c_args_len c_args_off ]
+    dup4                            // [ dest_off c_args_len c_args_len c_args_off dest_off ]
+    codecopy                        // [ c_args_ptr c_args_len]
+}
+
+// bitmask an address
+#define macro MASK_ADDRESS = takes(1) returns(1) {
+    // [ addr ]
+    0x01                            // [ addr 0x01 ]
+    dup1                            // [ addr 0x01 0x01 ]
+    0xa0                            // [ addr 0x01 0x01 0xa0 ]
+    shl
+    sub
+    and                             // [ address(addr) ]
+}
+
+template <throw_label>
+#define macro ASSERT_GTE_32 = takes(1) returns(0) {
+    // [ value ]
+    0x20                            // [ value 0x20 ]
+    swap1                           // [ 0x20 value ]
+    lt                              // [ (value < 0x20) ]
+    <throw_label>                   // [ (value < 0x20) throw_label ]
+    jumpi                           // [ ]
+}
+
+#define macro CONSTRUCTOR = takes(0) returns(0) {
+    // [ ]
+    0x00                                // [ c_args_ptr ]
+    COPY_CONSTRUCTOR_ARGS<CONSTRUCTOR_SHALLOW_SIZE+RUNTIME_SIZE>()
+    // [ c_args_ptr c_args_len ]
+    dup1    // [ c_args_ptr c_args_len c_args_len ]
+
+    // check that constructor args were at least 32 bytes
+    ASSERT_GTE_32<throw_label>()  // [ c_args_ptr c_args_len ]
+    0x20
+    swap1
+    sub     // c_args_ptr c_args_len - address len
+
+
+    mload                               // [ target ]
+    MASK_ADDRESS()                      // address(target) ]
+    STORE_TARGET()                      // [ ]
+    COPY_RUNTIME()                      // [ runtime_size 0x00 ]
+    return                              // [ ]
+
+    throw_label:
+        revert
+}
+
 #define macro CONSTRUCTOR_SHALLOW = takes(0) returns(0) { }
 
 #define macro CONSTRUCTOR = takes(0) returns(0) { }
