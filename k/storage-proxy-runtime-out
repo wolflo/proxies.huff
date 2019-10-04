@@ -1,0 +1,292 @@
+<kevm>
+  <k>
+    #transferFunds 0 87579061662017136990230301793909925042452127430 0 ~> #mkCall 0 87579061662017136990230301793909925042452127430 .Map b"" 0 b"u\xf1+!" false ~> #return 0 0 ~> #pc [ DELEGATECALL ] ~> #execute ~> flush ~> exception ~> clear ~> run { .JSONList } ~> success .EthereumSimulation
+  </k>
+  <exit-code>
+    1
+  </exit-code>
+  <mode>
+    NORMAL
+  </mode>
+  <schedule>
+    BYZANTIUM
+  </schedule>
+  <ethereum>
+    <evm>
+      <output>
+        b""
+      </output>
+      <statusCode>
+        .StatusCode
+      </statusCode>
+      <callStack>
+        ListItem ( <callState>-fragment <program>
+          0 |-> PUSH ( 1 , 0 )
+          2 |-> CALLDATASIZE
+          3 |-> DUP ( 1 )
+          4 |-> DUP ( 3 )
+          5 |-> DUP ( 4 )
+          6 |-> CALLDATACOPY
+          7 |-> DUP ( 2 )
+          8 |-> DUP ( 3 )
+          9 |-> SWAP ( 2 )
+          10 |-> DUP ( 4 )
+          11 |-> PUSH ( 1 , 0 )
+          13 |-> SLOAD
+          14 |-> GAS
+          15 |-> DELEGATECALL
+          16 |-> RETURNDATASIZE
+          17 |-> DUP ( 1 )
+          18 |-> DUP ( 4 )
+          19 |-> DUP ( 5 )
+          20 |-> RETURNDATACOPY
+          21 |-> SWAP ( 2 )
+          22 |-> SWAP ( 1 )
+          23 |-> ISZERO
+          24 |-> PUSH ( 2 , 29 )
+          27 |-> JUMPI
+          28 |-> RETURN
+          29 |-> JUMPDEST
+          30 |-> REVERT
+        </program> <programBytes>
+          b"`\x006\x80\x82\x837\x81\x82\x91\x83`\x00TZ\xf4=\x80\x83\x84>\x91\x90\x15a\x00\x1dW\xf3[\xfd"
+        </programBytes> <id>
+          87579061662017136990230301793909925042452127430
+        </id> <caller>
+          0
+        </caller> <callData>
+          b"u\xf1+!"
+        </callData> <callValue>
+          0
+        </callValue> <wordStack>
+          0 : .WordStack
+        </wordStack> <localMem>
+          0 |-> 117
+          1 |-> 241
+          2 |-> 43
+          3 |-> 33
+        </localMem> <pc>
+          15
+        </pc> <gas>
+          1235
+        </gas> <memoryUsed>
+          1
+        </memoryUsed> <callGas>
+          77813
+        </callGas> <static>
+          false
+        </static> <callDepth>
+          0
+        </callDepth> </callState>-fragment )
+      </callStack>
+      <interimStates>
+        ListItem ( { <accounts>-fragment <account>
+          <acctID>
+            87579061662017136990230301793909925042452127430
+          </acctID>
+          <balance>
+            0
+          </balance>
+          <code>
+            b""
+          </code>
+          <storage>
+            0 |-> 1325341206886658529526634625452626112293486959890
+          </storage>
+          <origStorage>
+            0 |-> 1325341206886658529526634625452626112293486959890
+          </origStorage>
+          <nonce>
+            0
+          </nonce>
+        </account> </accounts>-fragment | SetItem ( 87579061662017136990230301793909925042452127430 ) | <substate>-fragment <selfDestruct>
+          .Set
+        </selfDestruct> <log>
+          .List
+        </log> <refund>
+          0
+        </refund> </substate>-fragment } )
+      </interimStates>
+      <touchedAccounts>
+        .Set
+      </touchedAccounts>
+      <callState>
+        <program>
+          0 |-> PUSH ( 1 , 0 )
+          2 |-> CALLDATASIZE
+          3 |-> DUP ( 1 )
+          4 |-> DUP ( 3 )
+          5 |-> DUP ( 4 )
+          6 |-> CALLDATACOPY
+          7 |-> DUP ( 2 )
+          8 |-> DUP ( 3 )
+          9 |-> SWAP ( 2 )
+          10 |-> DUP ( 4 )
+          11 |-> PUSH ( 1 , 0 )
+          13 |-> SLOAD
+          14 |-> GAS
+          15 |-> DELEGATECALL
+          16 |-> RETURNDATASIZE
+          17 |-> DUP ( 1 )
+          18 |-> DUP ( 4 )
+          19 |-> DUP ( 5 )
+          20 |-> RETURNDATACOPY
+          21 |-> SWAP ( 2 )
+          22 |-> SWAP ( 1 )
+          23 |-> ISZERO
+          24 |-> PUSH ( 2 , 29 )
+          27 |-> JUMPI
+          28 |-> RETURN
+          29 |-> JUMPDEST
+          30 |-> REVERT
+        </program>
+        <programBytes>
+          b"`\x006\x80\x82\x837\x81\x82\x91\x83`\x00TZ\xf4=\x80\x83\x84>\x91\x90\x15a\x00\x1dW\xf3[\xfd"
+        </programBytes>
+        <id>
+          87579061662017136990230301793909925042452127430
+        </id>
+        <caller>
+          0
+        </caller>
+        <callData>
+          b"u\xf1+!"
+        </callData>
+        <callValue>
+          0
+        </callValue>
+        <wordStack>
+          0 : .WordStack
+        </wordStack>
+        <localMem>
+          0 |-> 117
+          1 |-> 241
+          2 |-> 43
+          3 |-> 33
+        </localMem>
+        <pc>
+          15
+        </pc>
+        <gas>
+          1235
+        </gas>
+        <memoryUsed>
+          1
+        </memoryUsed>
+        <callGas>
+          77813
+        </callGas>
+        <static>
+          false
+        </static>
+        <callDepth>
+          0
+        </callDepth>
+      </callState>
+      <substate>
+        <selfDestruct>
+          .Set
+        </selfDestruct>
+        <log>
+          .List
+        </log>
+        <refund>
+          0
+        </refund>
+      </substate>
+      <gasPrice>
+        0
+      </gasPrice>
+      <origin>
+        0
+      </origin>
+      <previousHash>
+        0
+      </previousHash>
+      <ommersHash>
+        0
+      </ommersHash>
+      <coinbase>
+        0
+      </coinbase>
+      <stateRoot>
+        0
+      </stateRoot>
+      <transactionsRoot>
+        0
+      </transactionsRoot>
+      <receiptsRoot>
+        0
+      </receiptsRoot>
+      <logsBloom>
+        b""
+      </logsBloom>
+      <difficulty>
+        0
+      </difficulty>
+      <number>
+        0
+      </number>
+      <gasLimit>
+        0
+      </gasLimit>
+      <gasUsed>
+        0
+      </gasUsed>
+      <timestamp>
+        0
+      </timestamp>
+      <extraData>
+        b""
+      </extraData>
+      <mixHash>
+        0
+      </mixHash>
+      <blockNonce>
+        0
+      </blockNonce>
+      <ommerBlockHeaders>
+        [ .JSONList ]
+      </ommerBlockHeaders>
+      <blockhash>
+        .List
+      </blockhash>
+    </evm>
+    <network>
+      <activeAccounts>
+        SetItem ( 87579061662017136990230301793909925042452127430 )
+      </activeAccounts>
+      <accounts>
+        <account>
+          <acctID>
+            87579061662017136990230301793909925042452127430
+          </acctID>
+          <balance>
+            0
+          </balance>
+          <code>
+            b""
+          </code>
+          <storage>
+            0 |-> 1325341206886658529526634625452626112293486959890
+          </storage>
+          <origStorage>
+            0 |-> 1325341206886658529526634625452626112293486959890
+          </origStorage>
+          <nonce>
+            0
+          </nonce>
+        </account>
+      </accounts>
+      <txOrder>
+        .List
+      </txOrder>
+      <txPending>
+        .List
+      </txPending>
+      <messages>
+        .MessageCellMap
+      </messages>
+    </network>
+  </ethereum>
+</kevm>
