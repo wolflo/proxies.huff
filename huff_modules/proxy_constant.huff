@@ -15,7 +15,7 @@
 
 
 #define macro CONSTRUCTOR = takes(0) returns(0) {
-    //[ ]
+    // [ ]
     COPY_RUNTIME()                  // [ runtime_size 0x00 ]
     return                          // [ ]
 }

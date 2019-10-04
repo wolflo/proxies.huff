@@ -31,14 +31,6 @@ template <constructor_args_offset>
     codecopy                        // [ c_args_ptr c_args_len]
 }
 
-#define macro STORE_TARGET = takes(1) returns(0) {
-    // sstore(key, value)
-
-    // [ target ]
-    TARGET_SLOT()                   // [ target TARGET_SLOT() ]
-    sstore                          // [ ]
-}
-
 // bitmask an address
 #define macro MASK_ADDRESS = takes(1) returns(1) {
     // [ addr ]
