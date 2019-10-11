@@ -14,6 +14,22 @@
     sstore                          // [ ]
 }
 
+// copy all constructor args into memory, leaves ptr and length on stack
+template <constructor_args_offset>
+#define macro COPY_CONSTRUCTOR_ARGS = takes(1) returns(2) {
+    // codecopy(destOffset, offset, length)
+
+    // [ dest_offset ]
+    <constructor_args_offset>       // [ dest_off c_args_off ]
+    dup1                            // [ dest_off c_args_off c_args_off ]
+    codesize                        // [ dest_off c_args_off c_args_off codesize ]
+    sub                             // [ dest_off c_args_off c_args_len ]
+    dup1                            // [ dest_off c_args_off c_args_len c_args_len ]
+    swap2                           // [ dest_off c_args_len c_args_len c_args_off ]
+    dup4                            // [ dest_off c_args_len c_args_len c_args_off dest_off ]
+    codecopy                        // [ c_args_ptr c_args_len]
+}
+
 // copy arbitrary length returndata into memory.
 // assumes returndata ptr == 0x00
 #define macro COPY_RETURNDATA = takes(2) returns(3) {
@@ -93,6 +109,13 @@ template <throw_label>
     iszero                  // [ returndatasize 0x00 (success==0) ]
     <throw_label>           // [ returndatasize 0x00 (success==0) <throw_label> ]
     jumpi                   // [ returndatasize 0x00 ]
+}
+
+#define macro THROW = takes(0) returns(0) {
+    // [ ]
+    0x00
+    0x00
+    revert
 }
 
 

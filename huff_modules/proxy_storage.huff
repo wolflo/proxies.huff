@@ -17,22 +17,6 @@
     sload                           // [ ]
 }
 
-// copy all constructor args into memory, leaves ptr and length on stack
-template <constructor_args_offset>
-#define macro COPY_CONSTRUCTOR_ARGS = takes(1) returns(2) {
-    // codecopy(destOffset, offset, length)
-
-    // [ dest_offset ]
-    <constructor_args_offset>       // [ dest_off c_args_off ]
-    dup1                            // [ dest_off c_args_off c_args_off ]
-    codesize                        // [ dest_off c_args_off c_args_off codesize ]
-    sub                             // [ dest_off c_args_off c_args_len ]
-    dup1                            // [ dest_off c_args_off c_args_len c_args_len ]
-    swap2                           // [ dest_off c_args_len c_args_len c_args_off ]
-    dup4                            // [ dest_off c_args_len c_args_len c_args_off dest_off ]
-    codecopy                        // [ c_args_ptr c_args_len]
-}
-
 // matches size of COPY_RUNTIME macro
 #define macro COPY_RUNTIME_SHALLOW = takes(0) returns(0) {
     0x00
@@ -55,7 +39,7 @@ template <constructor_args_offset>
     return                              // [ ]
 
     throw_label:
-        revert
+        THROW()
 }
 
 #define macro CONSTRUCTOR = takes(0) returns(0) {
@@ -73,5 +57,5 @@ template <constructor_args_offset>
     return                              // [ ]
 
     throw_label:
-        revert
+        THROW()
 }
