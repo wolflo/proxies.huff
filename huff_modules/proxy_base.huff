@@ -5,6 +5,7 @@
 #define macro TARGET_SLOT = takes(0) returns(1) {}
 #define macro CONSTRUCTOR_SHALLOW = takes(0) returns(0) {}
 
+// stores a word in the storage slot for the deelgatecall target
 #define macro STORE_TARGET = takes(1) returns(0) {
     // sstore(key, value)
 
@@ -13,6 +14,8 @@
     sstore                          // [ ]
 }
 
+// copy arbitrary length returndata into memory.
+// assumes returndata ptr == 0x00
 #define macro COPY_RETURNDATA = takes(2) returns(3) {
     // returndatacopy(dest_offset, offset, len)
     // returndatacopy(return_data_ptr, 0x00, returndatasize)
@@ -26,7 +29,7 @@
     returndatacopy          // [ 0x00 success returndatasize ]
 }
 
-
+// perform a delegatecall
 #define macro DO_DELEGATECALL = takes(2) returns(2) {
     // delegatecall(gas, addr, argsOffset, argsLength, retOffset, retLength)
     // delegatecall(gas, TARGET(), 0x00, calldatasize, 0x00, 0x00)
@@ -41,6 +44,27 @@
     delegatecall            // [ 0x00 success ]
 }
 
+// bitmask an address
+#define macro MASK_ADDRESS = takes(1) returns(1) {
+    // [ addr ]
+    0x01                            // [ addr 0x01 ]
+    dup1                            // [ addr 0x01 0x01 ]
+    0xa0                            // [ addr 0x01 0x01 0xa0 ]
+    shl
+    sub
+    and                             // [ address(addr) ]
+}
+
+// throw if value on top of stack < 32
+template <throw_label>
+#define macro ASSERT_GTE_32 = takes(1) returns(0) {
+    // [ value ]
+    0x20                            // [ value 0x20 ]
+    swap1                           // [ 0x20 value ]
+    lt                              // [ (value < 0x20) ]
+    <throw_label>                   // [ (value < 0x20) throw_label ]
+    jumpi                           // [ ]
+}
 
 #define macro COPY_CALLDATA = takes(1) returns(2) {
     // calldatacopy(destOffset, offset, length)
@@ -86,16 +110,23 @@ template <throw_label>
         revert
 }
 
+#define macro RUNTIME_SIZE = takes(0) returns(1) {
+    __codesize(RUNTIME)
+}
+
+#define macro CONSTRUCTOR_SHALLOW_SIZE = takes(0) returns(1) {
+    __codesize(CONSTRUCTOR_SHALLOW)
+}
 
 #define macro COPY_RUNTIME = takes(0) returns(2) {
     // codecopy(destOffset, offset, len)
     // codecopy(0x00, runtime_offset, runtime_size)
 
     // [ ]
-    __codesize(RUNTIME)             // [ rt_size ]
+    RUNTIME_SIZE()                  // [ rt_size ]
     0x00                            // [ rt_size 0x00 ]
     dup2                            // [ rt_size 0x00 rt_size ]
-    __codesize(CONSTRUCTOR_SHALLOW) // [ rt_size 0x00 rt_size rt_offset ]
+    CONSTRUCTOR_SHALLOW_SIZE()      // [ rt_size 0x00 rt_size rt_offset ]
     dup3                            // [ rt_size 0x00 rt_size rt_offset 0x00 ]
     codecopy                        // [ rt_size 0x00 ]
 }

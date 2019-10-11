@@ -5,9 +5,10 @@
 // TODO: Add an OWNER_SLOT and store the deployer address?
 // Take a second contructor arg, or set it to caller?
 
-// constant
+// put the storage slot for the delegatecall target on top of stack
 #define macro TARGET_SLOT = takes(0) returns(1) { 0x00 }
 
+// sload the delegatecall target and leaves it on top of the stack
 #define macro TARGET = takes(0) returns(1) {
     // sload(TARGET_SLOT)
 
@@ -16,6 +17,7 @@
     sload                           // [ ]
 }
 
+// copy all constructor args into memory, leaves ptr and length on stack
 template <constructor_args_offset>
 #define macro COPY_CONSTRUCTOR_ARGS = takes(1) returns(2) {
     // codecopy(destOffset, offset, length)
@@ -31,27 +33,7 @@ template <constructor_args_offset>
     codecopy                        // [ c_args_ptr c_args_len]
 }
 
-// bitmask an address
-#define macro MASK_ADDRESS = takes(1) returns(1) {
-    // [ addr ]
-    0x01                            // [ addr 0x01 ]
-    dup1                            // [ addr 0x01 0x01 ]
-    0xa0                            // [ addr 0x01 0x01 0xa0 ]
-    shl
-    sub
-    and                             // [ address(addr) ]
-}
-
-template <throw_label>
-#define macro ASSERT_GTE_32 = takes(1) returns(0) {
-    // [ value ]
-    0x20                            // [ value 0x20 ]
-    swap1                           // [ 0x20 value ]
-    lt                              // [ (value < 0x20) ]
-    <throw_label>                   // [ (value < 0x20) throw_label ]
-    jumpi                           // [ ]
-}
-
+// matches size of COPY_RUNTIME macro
 #define macro COPY_RUNTIME_SHALLOW = takes(0) returns(0) {
     0x00
     0x00
@@ -61,9 +43,7 @@ template <throw_label>
     codecopy
 }
 
-// used to determine offset in constructor (size of constructor_shallow
-// should equal size of constructor, which is then used as the offset
-// for codecopy in the constructor)
+// matches size of CONSTRUCTOR macro
 #define macro CONSTRUCTOR_SHALLOW = takes(0) returns(0) {
     0x00
     COPY_CONSTRUCTOR_ARGS<0x00>()
@@ -76,14 +56,6 @@ template <throw_label>
 
     throw_label:
         revert
-}
-
-#define macro CONSTRUCTOR_SHALLOW_SIZE = takes(0) returns(1) {
-    __codesize(CONSTRUCTOR_SHALLOW)
-}
-
-#define macro RUNTIME_SIZE = takes(0) returns(1) {
-    __codesize(RUNTIME)
 }
 
 #define macro CONSTRUCTOR = takes(0) returns(0) {
