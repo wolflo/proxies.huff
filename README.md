@@ -14,16 +14,24 @@ Deploys a more traditional proxy with a modifiable target address. Takes a singl
 ### 2D Proxy
 `huff_modules/proxy-2d.huff`  
 
-Idea borrowed from [here](https://github.com/GNSPS/2DProxy). A proxy that delegatecalls it's constructor. Takes the first constructor argument as the target and stores it at the `TARGET_SLOT`. The second constructor argument is the constructor target. All remaining constructor arguments are copied into memory, then the proxy `delegatecalls` to the constructor target with the constructor args as calldata. I haven't even started on this one yet.
+Idea borrowed from [GNSPS/2DProxy](https://github.com/GNSPS/2DProxy). A proxy that delegatecalls it's constructor. Takes the first constructor argument as the target and stores it at the `TARGET_SLOT`. The second constructor argument is the constructor target. All remaining constructor arguments are copied into memory, then the proxy `delegatecalls` to the constructor target with the constructor args as calldata. I haven't even started on this one yet.
 
 # Usage
-`git submodule update --init --recursive`
+`git clone --recursive`  
 `npm install`
 
 #### Compile bytecode
 `npm run compile` - compiles bytecode to proxies.json
 
 #### Run tests
-`npm run test`
+`npm run test` -- runs the huff tests, of which there are none
 
 Contributions and optimizations welcome, or feel free to fork and make it your own.
+
+# TODO
+- add huff tests  
+- add k tests  
+- beef up solidity tests  
+- finish 2d proxy  
+- add equivalent solidity implementations  
+- size and gas comparison to solidity implementations  
