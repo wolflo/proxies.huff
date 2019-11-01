@@ -1,6 +1,7 @@
 [submodule "huff"]
 	path = huff
-	url = https://github.com/AztecProtocol/huff.git
+	url = git@github.com:nsward/huff.git
+    branch = develop
 [submodule "dapp_tests"]
 	path = dapp_tests
 	url = git@github.com:nsward/proxies.test.huff.git

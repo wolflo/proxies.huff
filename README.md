@@ -9,7 +9,7 @@ The cheapest of the cheap. Deploys a proxy with a hardcoded target address, whic
 ### Storage Proxy
 `huff_modules/proxy-storage.huff`  
 
-Deploys a more traditional proxy with a modifiable target address. Takes a single constructor argument (the target), and stores it at the `TARGET_SLOT`. Working, but not well tested or optimized. Also, the bytecode in `proxies.json` is correct, but this module won't compile with the current version of huff. I've compiled it with a patched version of huff running locally, and Aztec has a fix in the works.
+Deploys a more traditional proxy with a modifiable target address. Takes a single constructor argument (the target), and stores it at the `TARGET_SLOT`. Working, but not well tested or optimized. Also, this one can only be compiled with the patched fork of huff at [nsward/huff](https://github.com/nsward/huff). Not sure if this fork will be merged or not, but it allows the bytecode necessary to copy constructor args to be parsed correctly.  
 
 ### 2D Proxy
 `huff_modules/proxy-2d.huff`  
