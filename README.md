@@ -14,7 +14,7 @@ Deploys a more traditional proxy with a modifiable target address. Takes a singl
 ### 2D Proxy
 `huff_modules/proxy-2d.huff`  
 
-Idea borrowed from [GNSPS/2DProxy](https://github.com/GNSPS/2DProxy). A proxy that delegatecalls it's constructor. Takes the first constructor argument as the target and stores it at the `TARGET_SLOT`. The second constructor argument is the constructor target. All remaining constructor arguments are copied into memory, then the proxy `delegatecalls` to the constructor target with the constructor args as calldata. I haven't even started on this one yet.
+Idea borrowed from [GNSPS/2DProxy](https://github.com/GNSPS/2DProxy). A proxy that delegatecalls it's constructor. Takes the first 32 bytes of constructor args as the `runtime_target`, to which future delegatecalls are made. The next 32 bytes of constructor args are the `constructor_target`. All remaining constructor arguments are copied into memory, then the proxy `delegatecalls` to the `constructor_target` with the copied args as calldata. There is a basic outline for this one, but it's still missing some pieces.
 
 # Usage
 `git clone --recursive`  
@@ -23,10 +23,18 @@ Idea borrowed from [GNSPS/2DProxy](https://github.com/GNSPS/2DProxy). A proxy th
 #### Compile bytecode
 `npm run compile` - compiles bytecode to proxies.json
 
-#### Run tests
-`npm run test` -- runs the huff tests, of which there are none
+#### Run huff tests
+`npm run test` -- (there aren't any yet)
 
-Contributions and optimizations welcome, or feel free to fork and make it your own.
+#### Run solidity tests
+see [proxies.test.huff](https://github.com/nsward/proxies.test.huff/tree/develop)
+
+#### Run K tests
+lol good luck
+
+#### For solidity equivalents and usage
+see [proxies.test.huff](https://github.com/nsward/proxies.test.huff/tree/develop)
+
 
 # TODO
 - add huff tests  
@@ -35,3 +43,6 @@ Contributions and optimizations welcome, or feel free to fork and make it your o
 - finish 2d proxy  
 - add equivalent solidity implementations  
 - size and gas comparison to solidity implementations  
+- documentation or whatever  
+
+Contributions and optimizations welcome, or feel free to fork and make it your own.
