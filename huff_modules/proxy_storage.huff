@@ -46,8 +46,8 @@
     // [ ]
     0x00                                // [ c_args_ptr ]
     COPY_CONSTRUCTOR_ARGS<CONSTRUCTOR_SHALLOW_SIZE+RUNTIME_SIZE>()
-    // [ c_args_ptr c_args_len ]
 
+    // [ c_args_ptr c_args_len ]
     // check that constructor args were at least 32 bytes
     ASSERT_GTE_32<throw_label>()  // [ c_args_ptr ]
     mload                               // [ target ]

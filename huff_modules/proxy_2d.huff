@@ -3,68 +3,129 @@
 // stack: [ bottom top ]
 
 // TODO:
-// - a proxy that delegatecalls it's constructor. Takes an arbitrary number of constructor args. The first one is the constructor target, the next one is the target (for future delegate calls) and everything else gets copied into memory for the delegatecall to the constructor target. The constructor target implements a fallback function that sets the storage according to any arbitrary logic using the data forwarded from the constructor. Then, all future delegate calls go to the runtime target
+// - a proxy that delegatecalls it's constructor. Takes an arbitrary number of constructor args. The first 32 bytes are the runtime target (for future delegate calls), the next 32 bytes are the constructor target, and everything else gets copied into memory for the delegatecall to the constructor target. The constructor target implements a fallback function that sets the storage according to any arbitrary logic using the data forwarded from the constructor. Then, all future delegate calls go to the runtime target
 
-template <constructor_args_offset>
-#define macro COPY_CONSTRUCTOR_ARGS = takes(1) returns(2) {
-    // codecopy(destOffset, offset, length)
+// put the storage slot for the runtime delegatecall target on top of stack
+#define macro TARGET_SLOT = takes(0) returns(1) { 0x00 }
 
-    // [ dest_offset ]
-    <constructor_args_offset>       // [ dest_off c_args_off ]
-    dup1                            // [ dest_off c_args_off c_args_off ]
-    codesize                        // [ dest_off c_args_off c_args_off codesize ]
-    sub                             // [ dest_off c_args_off c_args_len ]
-    dup1                            // [ dest_off c_args_off c_args_len c_args_len ]
-    swap2                           // [ dest_off c_args_len c_args_len c_args_off ]
-    dup4                            // [ dest_off c_args_len c_args_len c_args_off dest_off ]
-    codecopy                        // [ c_args_ptr c_args_len]
+// sload the delegatecall target and leaves it on top of the stack
+#define macro TARGET = takes(0) returns(1) {
+    // sload(TARGET_SLOT)
+
+    // []
+    TARGET_SLOT()                   // [ TARGET_SLOT() ]
+    sload                           // [ ]
 }
 
-// bitmask an address
-#define macro MASK_ADDRESS = takes(1) returns(1) {
-    // [ addr ]
-    0x01                            // [ addr 0x01 ]
-    dup1                            // [ addr 0x01 0x01 ]
-    0xa0                            // [ addr 0x01 0x01 0xa0 ]
-    shl
-    sub
-    and                             // [ address(addr) ]
+#define macro CONSTRUCTOR_SHALLOW = takes(0) returns(0) {
+
 }
 
-template <throw_label>
-#define macro ASSERT_GTE_32 = takes(1) returns(0) {
-    // [ value ]
-    0x20                            // [ value 0x20 ]
-    swap1                           // [ 0x20 value ]
-    lt                              // [ (value < 0x20) ]
-    <throw_label>                   // [ (value < 0x20) throw_label ]
-    jumpi                           // [ ]
-}
+// Copy constructor args into memory
+// switch len(constructor_args)
+    // case < 0x20
+        // revert
+    // case 0x20
+        // store first arg at TARGET_SLOT
+    // case 0x20 < len < 0x40
+        // revert? or just ignore extra bytes?
+    // case 0x40
+        // store first arg at TARGET_SLOT
+        // delegatecall to second arg
+    // case >0x40
+        // store first arg at TARGET_SLOT
+        // delegatecall to second arg with additional bytes as calldata
+    // return runtime
+
+// instead of ^, just revert if c_args_len < 0x40
+
+
+// TODO:
+// - should we store the runtime target after the constructor delegate call?
+//      This would prevent the constructor delegatecall from overwriting runtime target, which could be good or bad
 
 #define macro CONSTRUCTOR = takes(0) returns(0) {
     // [ ]
-    0x00                                // [ c_args_ptr ]
+    0x00        // [ 0x00 ]
+    dup1        // [ 0x00 dest_off ]
     COPY_CONSTRUCTOR_ARGS<CONSTRUCTOR_SHALLOW_SIZE+RUNTIME_SIZE>()
-    // [ c_args_ptr c_args_len ]
-    dup1    // [ c_args_ptr c_args_len c_args_len ]
 
-    // check that constructor args were at least 32 bytes
-    ASSERT_GTE_32<throw_label>()  // [ c_args_ptr c_args_len ]
-    0x20
-    swap1
-    sub     // c_args_ptr c_args_len - address len
+    // [ 0x00 c_args_ptr c_args_len ]
+    dup1        // [ 0x00 c_args_ptr c_args_len c_args_len ]
+    0x40        // [ 0x00 c_args_ptr c_args_len c_args_len 0x40 ]
+    ASSERT_GTE<throw_label>()    // [ 0x00 c_args_ptr c_args_len ]
+    dup2                    // [ 0x00 c_args_ptr c_args_len c_args_ptr ]
+    mload                   // [ 0x00 c_args_ptr c_args_len rt_target ]
+    MASK_ADDRESS()          // [ 0x00 c_args_ptr c_args_len addr(rt_target) ]
+    STORE_TARGET()          // [ 0x00 c_args_ptr c_args_len ]
+
+    // do the constructor delegatecall
+    // delegatecall(gas, addr, argsOffset, argsLength, retOffset, retLength)
+    // delegatecall(gas, c_target, )
+
+    // [ 0x00 c_args_ptr c_args_len ]
+    dup3                    // [ 0x00 c_args_ptr c_args_len 0x00 ]
+    dup1                   // [ 0x00 c_args_ptr c_args_len 0x00 0x00 ]
+    swap2                   // [ 0x00 c_args_ptr 0x00 0x00 c_args_len ]
+    0x40                    // [ 0x00 c_args_ptr 0x00 0x00 c_args_len 0x40 ]
+    sub                     // [ 0x00 c_args_ptr 0x00 0x00 sub(c_args_len, 0x40) ]
+
+    dup4                    // [ 0x00 c_args_ptr 0x00 0x00 sub(c_args_len, 0x40) c_args_ptr ]
+    0x40                    // [ 0x00 c_args_ptr 0x00 0x00 sub(c_args_len, 0x40) c_args_ptr 0x40 ]
+    add                     // [ 0x00 c_args_ptr 0x00 0x00 sub(c_args_len, 0x40) add(c_args_ptr, 0x40) ]
+
+    // c_target = mload(add(c_args_ptr, 0x20))
+    dup5                    // [ 0x00 c_args_ptr ... c_args_ptr ]
+    0x20                    // [ 0x00 c_args_ptr ... c_args_ptr 0x20 ]
+    add                     // [ 0x00 c_args_ptr ... c_target_ptr ]
+    mload                   // [ 0x00 c_args_ptr ... c_target ]
+    MASK_ADDRESS()          // [ 0x00 c_args_ptr ... addr(c_target) ]
+
+    gas
+    // [ 0x00 0x00 extra_c_args_len extra_c_args_off addr(c_target) gas]
+    delegatecall
+
+    // TODO: check success and revert with returndata if failed
 
 
-    mload                               // [ target ]
-    MASK_ADDRESS()                      // address(target) ]
-    STORE_TARGET()                      // [ ]
-    COPY_RUNTIME()                      // [ runtime_size 0x00 ]
-    return                              // [ ]
+    COPY_RUNTIME()          // [ rt_len 0x00 ]
+    return
 
     throw_label:
-        revert
+        THROW()
 }
 
-#define macro CONSTRUCTOR_SHALLOW = takes(0) returns(0) { }
 
-#define macro CONSTRUCTOR = takes(0) returns(0) { }
+
+
+// #define macro CONSTRUCTOR = takes(0) returns(0) {
+//     // [ ]
+//     0x00                            // [ c_args_ptr ]
+//     dup1                            // [ 0x00 c_args_ptr ]
+//     COPY_CONSTRUCTOR_ARGS<CONSTRUCTOR_SHALLOW_SIZE+RUNTIME_SIZE>()
+//     dup1                            // [ c_args_ptr c_args_len c_args_len ]
+
+//     // check that constructor args were at least 32 bytes
+//     ASSERT_GTE_32<throw_label>()    // [ c_args_ptr c_args_len ]
+//     0x20                            // [ c_args_ptr c_args_len 0x20 ]
+//     swap1                           // [ c_args_ptr 0x20 c_args_len ]
+//     // c_args_len - 0x20 is the length of data provided for the contructor delegatecall
+//     sub                             // [ c_args_ptr (c_args_len - 0x20) ]
+
+//     // if c_args_len - 0x20 > 0, copy calldata
+//     // do delegatecall
+//     // delegatecall(gas, addr, argsOffset, argsLength, retOffset, retLength)
+//     // [ 0x00 ret_len ret_ptr args_len args_ptr ]
+//     // [ ]
+//     // DO_DELEGATECALL
+
+
+//     mload                           // [ target ]
+//     MASK_ADDRESS()                  // address(target) ]
+//     STORE_TARGET()                  // [ ]
+//     COPY_RUNTIME()                  // [ runtime_size 0x00 ]
+//     return                          // [ ]
+
+//     throw_label:
+//         THROW()
+// }

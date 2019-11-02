@@ -82,6 +82,16 @@ template <throw_label>
     jumpi                           // [ ]
 }
 
+// note that this takes args in reverse of intuitive order
+template <throw_label>
+#define macro ASSERT_GTE = takes(2) returns(0) {
+    // [ val min_val  ]
+    swap1                   // [ min_val val ]
+    lt                      // [ (val < min_val) ]
+    <throw_label>           // [ (val < min_val) throw_label ]
+    jumpi                   // [ ]
+}
+
 #define macro COPY_CALLDATA = takes(1) returns(2) {
     // calldatacopy(destOffset, offset, length)
     // calldatacopy(0x00, 0x00, calldatasize)
