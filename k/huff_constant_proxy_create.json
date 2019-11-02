@@ -1,0 +1,25 @@
+{
+    "constant_proxy_create" : {
+        "_info": {
+            "comment": "test deployment of constant proxy init code"
+        },
+        "exec" : {
+            "address" : "0x0f572e5295c57f15886f9b263e2f6d2d6c7b5ec6",
+            "caller" : "0xcd1722f3947def4cf144679da39c4c32bdc35681",
+            "code" : "0x36600060008282823791905a92f05a00",
+            "data" : "0x6031600081600a8239f3600036808283378182918373E58d97b6622134C0436d60daeE7FBB8b965D97135af43d8083843e91901561002f57f35bfd",
+            "gas" : "0xffff",
+            "gasPrice" : "0x5af3107a4000",
+            "origin" : "0xcd1722f3947def4cf144679da39c4c32bdc35681",
+            "value" : "0x0de0b6b3a7640000"
+        },
+        "pre" : {
+            "0x0f572e5295c57f15886f9b263e2f6d2d6c7b5ec6" : {
+                "code" : "0x36600060008282823791905a92f05a00",
+                "nonce" : "0x00",
+                "storage" : {
+                }
+            }
+        }
+    }
+}

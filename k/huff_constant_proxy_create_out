@@ -1,0 +1,293 @@
+<kevm>
+  <k>
+    #finalizeTx ( false ) ~> exception ~> clear ~> run { .JSONList } ~> success .EthereumSimulation
+  </k>
+  <exit-code>
+    1
+  </exit-code>
+  <mode>
+    NORMAL
+  </mode>
+  <schedule>
+    BYZANTIUM
+  </schedule>
+  <ethereum>
+    <evm>
+      <output>
+        b""
+      </output>
+      <statusCode>
+        EVMC_SUCCESS
+      </statusCode>
+      <callStack>
+        .List
+      </callStack>
+      <interimStates>
+        .List
+      </interimStates>
+      <touchedAccounts>
+        SetItem ( 87579061662017136990230301793909925042452127430 )
+        SetItem ( 846782024548323446991784721256445173708587954613 )
+      </touchedAccounts>
+      <callState>
+        <program>
+          0 |-> CALLDATASIZE
+          1 |-> PUSH ( 1 , 0 )
+          3 |-> PUSH ( 1 , 0 )
+          5 |-> DUP ( 3 )
+          6 |-> DUP ( 3 )
+          7 |-> DUP ( 3 )
+          8 |-> CALLDATACOPY
+          9 |-> SWAP ( 2 )
+          10 |-> SWAP ( 1 )
+          11 |-> GAS
+          12 |-> SWAP ( 3 )
+          13 |-> CREATE
+          14 |-> GAS
+          15 |-> STOP
+        </program>
+        <programBytes>
+          b"6`\x00`\x00\x82\x82\x827\x91\x90Z\x92\xf0Z\x00"
+        </programBytes>
+        <id>
+          87579061662017136990230301793909925042452127430
+        </id>
+        <caller>
+          1170859069862169782511871033392474246841492526721
+        </caller>
+        <callData>
+          b"`1`\x00\x81`\n\x829\xf3`\x006\x80\x82\x837\x81\x82\x91\x83s\xe5\x8d\x97\xb6b!4\xc0Cm`\xda\xee\x7f\xbb\x8b\x96]\x97\x13Z\xf4=\x80\x83\x84>\x91\x90\x15a\x00/W\xf3[\xfd"
+        </callData>
+        <callValue>
+          1000000000000000000
+        </callValue>
+        <wordStack>
+          23660 : 846782024548323446991784721256445173708587954613 : 65495 : .WordStack
+        </wordStack>
+        <localMem>
+          0 |-> 96
+          1 |-> 49
+          2 |-> 96
+          3 |-> 0
+          4 |-> 129
+          5 |-> 96
+          6 |-> 10
+          7 |-> 130
+          8 |-> 57
+          9 |-> 243
+          10 |-> 96
+          11 |-> 0
+          12 |-> 54
+          13 |-> 128
+          14 |-> 130
+          15 |-> 131
+          16 |-> 55
+          17 |-> 129
+          18 |-> 130
+          19 |-> 145
+          20 |-> 131
+          21 |-> 115
+          22 |-> 229
+          23 |-> 141
+          24 |-> 151
+          25 |-> 182
+          26 |-> 98
+          27 |-> 33
+          28 |-> 52
+          29 |-> 192
+          30 |-> 67
+          31 |-> 109
+          32 |-> 96
+          33 |-> 218
+          34 |-> 238
+          35 |-> 127
+          36 |-> 187
+          37 |-> 139
+          38 |-> 150
+          39 |-> 93
+          40 |-> 151
+          41 |-> 19
+          42 |-> 90
+          43 |-> 244
+          44 |-> 61
+          45 |-> 128
+          46 |-> 131
+          47 |-> 132
+          48 |-> 62
+          49 |-> 145
+          50 |-> 144
+          51 |-> 21
+          52 |-> 97
+          53 |-> 0
+          54 |-> 47
+          55 |-> 87
+          56 |-> 243
+          57 |-> 91
+          58 |-> 253
+        </localMem>
+        <pc>
+          15
+        </pc>
+        <gas>
+          23660
+        </gas>
+        <memoryUsed>
+          2
+        </memoryUsed>
+        <callGas>
+          32969
+        </callGas>
+        <static>
+          false
+        </static>
+        <callDepth>
+          0
+        </callDepth>
+      </callState>
+      <substate>
+        <selfDestruct>
+          .Set
+        </selfDestruct>
+        <log>
+          .List
+        </log>
+        <refund>
+          0
+        </refund>
+      </substate>
+      <gasPrice>
+        100000000000000
+      </gasPrice>
+      <origin>
+        1170859069862169782511871033392474246841492526721
+      </origin>
+      <previousHash>
+        0
+      </previousHash>
+      <ommersHash>
+        0
+      </ommersHash>
+      <coinbase>
+        0
+      </coinbase>
+      <stateRoot>
+        0
+      </stateRoot>
+      <transactionsRoot>
+        0
+      </transactionsRoot>
+      <receiptsRoot>
+        0
+      </receiptsRoot>
+      <logsBloom>
+        b""
+      </logsBloom>
+      <difficulty>
+        0
+      </difficulty>
+      <number>
+        0
+      </number>
+      <gasLimit>
+        0
+      </gasLimit>
+      <gasUsed>
+        0
+      </gasUsed>
+      <timestamp>
+        0
+      </timestamp>
+      <extraData>
+        b""
+      </extraData>
+      <mixHash>
+        0
+      </mixHash>
+      <blockNonce>
+        0
+      </blockNonce>
+      <ommerBlockHeaders>
+        [ .JSONList ]
+      </ommerBlockHeaders>
+      <blockhash>
+        .List
+      </blockhash>
+    </evm>
+    <network>
+      <activeAccounts>
+        SetItem ( 0 )
+        SetItem ( 87579061662017136990230301793909925042452127430 )
+        SetItem ( 846782024548323446991784721256445173708587954613 )
+      </activeAccounts>
+      <accounts>
+        <account>
+          <acctID>
+            0
+          </acctID>
+          <balance>
+            0
+          </balance>
+          <code>
+            b""
+          </code>
+          <storage>
+            .Map
+          </storage>
+          <origStorage>
+            .Map
+          </origStorage>
+          <nonce>
+            0
+          </nonce>
+        </account> <account>
+          <acctID>
+            87579061662017136990230301793909925042452127430
+          </acctID>
+          <balance>
+            0
+          </balance>
+          <code>
+            b"6`\x00`\x00\x82\x82\x827\x91\x90Z\x92\xf0Z\x00"
+          </code>
+          <storage>
+            .Map
+          </storage>
+          <origStorage>
+            .Map
+          </origStorage>
+          <nonce>
+            1
+          </nonce>
+        </account> <account>
+          <acctID>
+            846782024548323446991784721256445173708587954613
+          </acctID>
+          <balance>
+            0
+          </balance>
+          <code>
+            b"`\x006\x80\x82\x837\x81\x82\x91\x83s\xe5\x8d\x97\xb6b!4\xc0Cm`\xda\xee\x7f\xbb\x8b\x96]\x97\x13Z\xf4=\x80\x83\x84>\x91\x90\x15a\x00/W\xf3[\xfd"
+          </code>
+          <storage>
+            .Map
+          </storage>
+          <origStorage>
+            .Map
+          </origStorage>
+          <nonce>
+            1
+          </nonce>
+        </account>
+      </accounts>
+      <txOrder>
+        .List
+      </txOrder>
+      <txPending>
+        .List
+      </txPending>
+      <messages>
+        .MessageCellMap
+      </messages>
+    </network>
+  </ethereum>
+</kevm>
