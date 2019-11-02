@@ -1,0 +1,374 @@
+<kevm>
+  <k>
+    #finalizeTx ( false ) ~> exception ~> clear ~> run { .JSONList } ~> success .EthereumSimulation
+  </k>
+  <exit-code>
+    1
+  </exit-code>
+  <mode>
+    NORMAL
+  </mode>
+  <schedule>
+    BYZANTIUM
+  </schedule>
+  <ethereum>
+    <evm>
+      <output>
+        b""
+      </output>
+      <statusCode>
+        EVMC_SUCCESS
+      </statusCode>
+      <callStack>
+        .List
+      </callStack>
+      <interimStates>
+        .List
+      </interimStates>
+      <touchedAccounts>
+        SetItem ( 87579061662017136990230301793909925042452127430 )
+        SetItem ( 846782024548323446991784721256445173708587954613 )
+      </touchedAccounts>
+      <callState>
+        <program>
+          0 |-> CALLDATASIZE
+          1 |-> PUSH ( 1 , 0 )
+          3 |-> PUSH ( 1 , 0 )
+          5 |-> DUP ( 3 )
+          6 |-> DUP ( 3 )
+          7 |-> DUP ( 3 )
+          8 |-> CALLDATACOPY
+          9 |-> SWAP ( 2 )
+          10 |-> SWAP ( 1 )
+          11 |-> GAS
+          12 |-> SWAP ( 3 )
+          13 |-> CREATE
+          14 |-> GAS
+          15 |-> STOP
+        </program>
+        <programBytes>
+          b"6`\x00`\x00\x82\x82\x827\x91\x90Z\x92\xf0Z\x00"
+        </programBytes>
+        <id>
+          87579061662017136990230301793909925042452127430
+        </id>
+        <caller>
+          1170859069862169782511871033392474246841492526721
+        </caller>
+        <callData>
+          b"`\x80`@R4\x80\x15`\x0fW`\x00\x80\xfd[P`o\x80`\x1d`\x009`\x00\xf3\xfe`\x80`@Rs\xe5\x8d\x97\xb6b!4\xc0Cm`\xda\xee\x7f\xbb\x8b\x96]\x97\x136`\x00\x807`\x00\x806`\x00\x84Z\xf4=`\x00\x80>\x80`5W=`\x00\xfd[=`\x00\xf3\xfe\xa2ebzzr1X \xf8\xbbU=hI7\x16*\xcf\xfc~=p\xed\x9bY'\xcan\xba~O\xd38\xcb\x1b\n\xe0\xd2:\xbadsolcC\x00\x05\f\x002"
+        </callData>
+        <callValue>
+          1000000000000000000
+        </callValue>
+        <wordStack>
+          11197 : 846782024548323446991784721256445173708587954613 : 65477 : .WordStack
+        </wordStack>
+        <localMem>
+          0 |-> 96
+          1 |-> 128
+          2 |-> 96
+          3 |-> 64
+          4 |-> 82
+          5 |-> 52
+          6 |-> 128
+          7 |-> 21
+          8 |-> 96
+          9 |-> 15
+          10 |-> 87
+          11 |-> 96
+          12 |-> 0
+          13 |-> 128
+          14 |-> 253
+          15 |-> 91
+          16 |-> 80
+          17 |-> 96
+          18 |-> 111
+          19 |-> 128
+          20 |-> 96
+          21 |-> 29
+          22 |-> 96
+          23 |-> 0
+          24 |-> 57
+          25 |-> 96
+          26 |-> 0
+          27 |-> 243
+          28 |-> 254
+          29 |-> 96
+          30 |-> 128
+          31 |-> 96
+          32 |-> 64
+          33 |-> 82
+          34 |-> 115
+          35 |-> 229
+          36 |-> 141
+          37 |-> 151
+          38 |-> 182
+          39 |-> 98
+          40 |-> 33
+          41 |-> 52
+          42 |-> 192
+          43 |-> 67
+          44 |-> 109
+          45 |-> 96
+          46 |-> 218
+          47 |-> 238
+          48 |-> 127
+          49 |-> 187
+          50 |-> 139
+          51 |-> 150
+          52 |-> 93
+          53 |-> 151
+          54 |-> 19
+          55 |-> 54
+          56 |-> 96
+          57 |-> 0
+          58 |-> 128
+          59 |-> 55
+          60 |-> 96
+          61 |-> 0
+          62 |-> 128
+          63 |-> 54
+          64 |-> 96
+          65 |-> 0
+          66 |-> 132
+          67 |-> 90
+          68 |-> 244
+          69 |-> 61
+          70 |-> 96
+          71 |-> 0
+          72 |-> 128
+          73 |-> 62
+          74 |-> 128
+          75 |-> 96
+          76 |-> 53
+          77 |-> 87
+          78 |-> 61
+          79 |-> 96
+          80 |-> 0
+          81 |-> 253
+          82 |-> 91
+          83 |-> 61
+          84 |-> 96
+          85 |-> 0
+          86 |-> 243
+          87 |-> 254
+          88 |-> 162
+          89 |-> 101
+          90 |-> 98
+          91 |-> 122
+          92 |-> 122
+          93 |-> 114
+          94 |-> 49
+          95 |-> 88
+          96 |-> 32
+          97 |-> 248
+          98 |-> 187
+          99 |-> 85
+          100 |-> 61
+          101 |-> 104
+          102 |-> 73
+          103 |-> 55
+          104 |-> 22
+          105 |-> 42
+          106 |-> 207
+          107 |-> 252
+          108 |-> 126
+          109 |-> 61
+          110 |-> 112
+          111 |-> 237
+          112 |-> 155
+          113 |-> 89
+          114 |-> 39
+          115 |-> 202
+          116 |-> 110
+          117 |-> 186
+          118 |-> 126
+          119 |-> 79
+          120 |-> 211
+          121 |-> 56
+          122 |-> 203
+          123 |-> 27
+          124 |-> 10
+          125 |-> 224
+          126 |-> 210
+          127 |-> 58
+          128 |-> 186
+          129 |-> 100
+          130 |-> 115
+          131 |-> 111
+          132 |-> 108
+          133 |-> 99
+          134 |-> 67
+          135 |-> 0
+          136 |-> 5
+          137 |-> 12
+          138 |-> 0
+          139 |-> 50
+        </localMem>
+        <pc>
+          15
+        </pc>
+        <gas>
+          11197
+        </gas>
+        <memoryUsed>
+          5
+        </memoryUsed>
+        <callGas>
+          32951
+        </callGas>
+        <static>
+          false
+        </static>
+        <callDepth>
+          0
+        </callDepth>
+      </callState>
+      <substate>
+        <selfDestruct>
+          .Set
+        </selfDestruct>
+        <log>
+          .List
+        </log>
+        <refund>
+          0
+        </refund>
+      </substate>
+      <gasPrice>
+        100000000000000
+      </gasPrice>
+      <origin>
+        1170859069862169782511871033392474246841492526721
+      </origin>
+      <previousHash>
+        0
+      </previousHash>
+      <ommersHash>
+        0
+      </ommersHash>
+      <coinbase>
+        0
+      </coinbase>
+      <stateRoot>
+        0
+      </stateRoot>
+      <transactionsRoot>
+        0
+      </transactionsRoot>
+      <receiptsRoot>
+        0
+      </receiptsRoot>
+      <logsBloom>
+        b""
+      </logsBloom>
+      <difficulty>
+        0
+      </difficulty>
+      <number>
+        0
+      </number>
+      <gasLimit>
+        0
+      </gasLimit>
+      <gasUsed>
+        0
+      </gasUsed>
+      <timestamp>
+        0
+      </timestamp>
+      <extraData>
+        b""
+      </extraData>
+      <mixHash>
+        0
+      </mixHash>
+      <blockNonce>
+        0
+      </blockNonce>
+      <ommerBlockHeaders>
+        [ .JSONList ]
+      </ommerBlockHeaders>
+      <blockhash>
+        .List
+      </blockhash>
+    </evm>
+    <network>
+      <activeAccounts>
+        SetItem ( 0 )
+        SetItem ( 87579061662017136990230301793909925042452127430 )
+        SetItem ( 846782024548323446991784721256445173708587954613 )
+      </activeAccounts>
+      <accounts>
+        <account>
+          <acctID>
+            0
+          </acctID>
+          <balance>
+            0
+          </balance>
+          <code>
+            b""
+          </code>
+          <storage>
+            .Map
+          </storage>
+          <origStorage>
+            .Map
+          </origStorage>
+          <nonce>
+            0
+          </nonce>
+        </account> <account>
+          <acctID>
+            87579061662017136990230301793909925042452127430
+          </acctID>
+          <balance>
+            0
+          </balance>
+          <code>
+            b"6`\x00`\x00\x82\x82\x827\x91\x90Z\x92\xf0Z\x00"
+          </code>
+          <storage>
+            .Map
+          </storage>
+          <origStorage>
+            .Map
+          </origStorage>
+          <nonce>
+            1
+          </nonce>
+        </account> <account>
+          <acctID>
+            846782024548323446991784721256445173708587954613
+          </acctID>
+          <balance>
+            0
+          </balance>
+          <code>
+            b"`\x80`@Rs\xe5\x8d\x97\xb6b!4\xc0Cm`\xda\xee\x7f\xbb\x8b\x96]\x97\x136`\x00\x807`\x00\x806`\x00\x84Z\xf4=`\x00\x80>\x80`5W=`\x00\xfd[=`\x00\xf3\xfe\xa2ebzzr1X \xf8\xbbU=hI7\x16*\xcf\xfc~=p\xed\x9bY'\xcan\xba~O\xd38\xcb\x1b\n\xe0\xd2:\xbadsolcC\x00\x05\f\x002"
+          </code>
+          <storage>
+            .Map
+          </storage>
+          <origStorage>
+            .Map
+          </origStorage>
+          <nonce>
+            1
+          </nonce>
+        </account>
+      </accounts>
+      <txOrder>
+        .List
+      </txOrder>
+      <txPending>
+        .List
+      </txPending>
+      <messages>
+        .MessageCellMap
+      </messages>
+    </network>
+  </ethereum>
+</kevm>
