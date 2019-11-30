@@ -17,6 +17,55 @@
 }
 
 #define macro CONSTRUCTOR_SHALLOW = takes(0) returns(0) {
+    // [ ]
+    0x00
+    dup1
+
+    ///// placeholder for
+    // COPY_CONSTRUCTOR_ARGS<CONSTRUCTOR_SHALLOW_SIZE+RUNTIME_SIZE>()
+    // TODO: check PUSH1 placeholder against total bytecode size
+    COPY_CONSTRUCTOR_ARGS<0x00>()
+
+    dup1
+    0x40
+    ASSERT_GTE<throw_label>()
+    dup2
+    mload
+    MASK_ADDRESS()
+    STORE_TARGET()
+
+    // do the constructor delegatecall
+    // delegatecall(gas, addr, argsOffset, argsLength, retOffset, retLength)
+    // delegatecall(gas, c_target, )
+
+    // [ 0x00 c_args_ptr c_args_len ]
+    dup3
+    dup1
+    swap2
+    0x40
+    sub
+
+    dup4
+    0x40
+    add
+
+    dup5
+    0x20
+    add
+    mload
+    MASK_ADDRESS()
+    gas
+    delegatecall
+
+    iszero
+    JUMPI<throw_label>()
+
+
+    COPY_RUNTIME_SHALLOW()
+    return
+
+    throw_label:
+        THROW()
 
 }
 
