@@ -2,8 +2,7 @@
 
 // stack: [ bottom top ]
 
-// TODO:
-// - a proxy that delegatecalls it's constructor. Takes an arbitrary number of constructor args. The first 32 bytes are the runtime target (for future delegate calls), the next 32 bytes are the constructor target, and everything else gets copied into memory for the delegatecall to the constructor target. The constructor target implements a fallback function that sets the storage according to any arbitrary logic using the data forwarded from the constructor. Then, all future delegate calls go to the runtime target
+// a proxy that delegatecalls it's constructor. Takes an arbitrary number of constructor args. The first 32 bytes are the runtime target (for future delegate calls), the next 32 bytes are the constructor target, and everything else gets copied into memory for the delegatecall to the constructor target. The constructor target implements a function that sets the storage according to any arbitrary logic using the data forwarded from the constructor (this data would include the function selector, if one was needed). Then, all future delegate calls go to the runtime target.
 
 // put the storage slot for the runtime delegatecall target on top of stack
 #define macro TARGET_SLOT = takes(0) returns(1) { 0x00 }
@@ -20,25 +19,6 @@
 #define macro CONSTRUCTOR_SHALLOW = takes(0) returns(0) {
 
 }
-
-// Copy constructor args into memory
-// switch len(constructor_args)
-    // case < 0x20
-        // revert
-    // case 0x20
-        // store first arg at TARGET_SLOT
-    // case 0x20 < len < 0x40
-        // revert? or just ignore extra bytes?
-    // case 0x40
-        // store first arg at TARGET_SLOT
-        // delegatecall to second arg
-    // case >0x40
-        // store first arg at TARGET_SLOT
-        // delegatecall to second arg with additional bytes as calldata
-    // return runtime
-
-// instead of ^, just revert if c_args_len < 0x40
-
 
 // TODO:
 // - should we store the runtime target after the constructor delegate call?
@@ -97,38 +77,3 @@
     throw_label:
         THROW()
 }
-
-
-
-
-// #define macro CONSTRUCTOR = takes(0) returns(0) {
-//     // [ ]
-//     0x00                            // [ c_args_ptr ]
-//     dup1                            // [ 0x00 c_args_ptr ]
-//     COPY_CONSTRUCTOR_ARGS<CONSTRUCTOR_SHALLOW_SIZE+RUNTIME_SIZE>()
-//     dup1                            // [ c_args_ptr c_args_len c_args_len ]
-
-//     // check that constructor args were at least 32 bytes
-//     ASSERT_GTE_32<throw_label>()    // [ c_args_ptr c_args_len ]
-//     0x20                            // [ c_args_ptr c_args_len 0x20 ]
-//     swap1                           // [ c_args_ptr 0x20 c_args_len ]
-//     // c_args_len - 0x20 is the length of data provided for the contructor delegatecall
-//     sub                             // [ c_args_ptr (c_args_len - 0x20) ]
-
-//     // if c_args_len - 0x20 > 0, copy calldata
-//     // do delegatecall
-//     // delegatecall(gas, addr, argsOffset, argsLength, retOffset, retLength)
-//     // [ 0x00 ret_len ret_ptr args_len args_ptr ]
-//     // [ ]
-//     // DO_DELEGATECALL
-
-
-//     mload                           // [ target ]
-//     MASK_ADDRESS()                  // address(target) ]
-//     STORE_TARGET()                  // [ ]
-//     COPY_RUNTIME()                  // [ runtime_size 0x00 ]
-//     return                          // [ ]
-
-//     throw_label:
-//         THROW()
-// }
