@@ -83,9 +83,12 @@
 
     gas
     // [ 0x00 0x00 extra_c_args_len extra_c_args_off addr(c_target) gas]
-    delegatecall
+    delegatecall    // [ success ]
 
-    // TODO: check success and revert with returndata if failed
+    // TODO: revert with data?
+    // check success and revert if failed
+    iszero          // [ iszero(success) ]
+    JUMPI<throw_label>()    // [ ]
 
 
     COPY_RUNTIME()          // [ rt_len 0x00 ]
