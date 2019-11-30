@@ -128,6 +128,12 @@ template <throw_label>
     revert
 }
 
+template <dest>
+#define macro JUMPI = takes(1) returns(0) {
+    // [ condition ]
+    <dest>  // [ condition <dest> ]
+    jumpi   // [ ]
+}
 
 #define macro RUNTIME = takes(0) returns(0) {
     // [ ]
